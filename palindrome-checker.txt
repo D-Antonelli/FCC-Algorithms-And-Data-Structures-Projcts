@@ -1,0 +1,24 @@
+function palindrome(str) {
+  const regex = /[A-Za-z0-9]+/ig;
+
+  let strLowcase = str.toLowerCase();
+  let rgxMatched = strLowcase.match(regex);
+  let forwardStr = rgxMatched.join(""); 
+  let reversed = [];
+
+  for(let i=forwardStr.length-1; i>=0; i--) {
+    reversed.push(forwardStr[i]);
+  } 
+
+  let reversedStr = reversed.join("");
+  
+  //compare
+  if(forwardStr === reversedStr) {
+    return true;
+  } else {
+    return false;
+  }
+  
+}
+
+
