@@ -1,0 +1,90 @@
+function convertToRoman(num) {
+  
+  const romanNums = {
+      1: 'I',
+      5: 'V',
+      10: 'X',
+      50: 'L',
+      100: 'C',
+      500: 'D',
+      1000: 'M'
+    }
+
+  //break the number into decimals
+  let divide = 10;
+  let digit = 1;
+  let breakNum = [];
+
+  while(divide < num) {
+    digit = num%divide;
+    if(digit !== 0) {
+      breakNum.push(digit);
+    }   
+    num = num - digit;
+    divide *= 10;
+  } 
+
+  breakNum.push(num);
+  breakNum.reverse();
+
+  
+  //convert each decimal into roman numerals
+  const convert = num => {
+    let res = '';
+
+    let keySet = Object.keys(romanNums);
+
+    for(let i=0; i<keySet.length; i++) {
+      
+      if(parseInt(keySet[i]) === num) {
+          res = romanNums[keySet[i]];
+          break;
+        } 
+
+      for(let j=0; j<keySet.length; j++) {
+        
+        if(parseInt(keySet[i]) - parseInt(keySet[j]) === num) {
+          res = romanNums[keySet[j]] + romanNums[keySet[i]];
+        }
+        if(parseInt(keySet[i]) + parseInt(keySet[j]) === num) {                  
+          res = romanNums[keySet[i]] + romanNums[keySet[j]];
+          
+        }   
+          for(let z=0; z<keySet.length; z++) {          
+            if(parseInt(keySet[i]) + parseInt(keySet[j]) + 
+            parseInt(keySet[z]) === num) { 
+                res = romanNums[keySet[i]] + romanNums[keySet[j]] + romanNums[keySet[z]];
+            }
+
+            for(let l=0; l<keySet.length; l++) {
+           if(parseInt(keySet[i]) + parseInt(keySet[j]) + 
+            parseInt(keySet[z]) + parseInt(keySet[l]) === num) {
+              res = romanNums[keySet[i]] + romanNums[keySet[j]] + romanNums[keySet[z]] + romanNums[keySet[l]];
+            }
+         }           
+          }                             
+      }
+      
+    }
+    return res; 
+  }
+
+
+  //provide converter function with each elements in array
+  const convertedNums = (array, converterFunc) => {
+    let romanNums = array.reduce((array, nextNum) => {
+      array.push(converterFunc(nextNum));
+      return array;
+    },[]);
+    return romanNums.join(""); 
+  }
+
+
+let finalRes = convertedNums(breakNum, convert);
+console.log("final result is "+finalRes);
+ return finalRes;
+}
+
+
+convertToRoman(1210);
+
