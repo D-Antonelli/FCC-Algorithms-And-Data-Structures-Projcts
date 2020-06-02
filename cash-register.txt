@@ -1,0 +1,126 @@
+function checkCashRegister(price, cash, cid) {
+
+  var changeDue = cash - price;
+  let cashSum = 0;
+
+  //return object
+  let obj = {
+    status: '',
+    change: []
+  };
+
+  //find sum of cash in cash-in-drawer
+  cashSum = cid.reduce((sum, nextCash) => {
+   sum += nextCash[1];
+   return sum; 
+  },0);
+
+
+  for(let i=cid.length-1; i>=0; i--) {
+    
+    let cash = cid[i][1];
+    let crrName = cid[i][0];
+    let unitCrr = convertToNum(crrName);
+    let checkOutSum = 0; 
+
+    //Total cash is less than change && currency unit is     more than change
+    if(changeDue > unitCrr && changeDue < cash) {
+      while(true) { 
+        checkOutSum+=unitCrr;              
+        cash-=unitCrr;
+        cashSum-=unitCrr;
+        changeDue-=unitCrr;
+        changeDue = changeDue.toFixed(2);
+   
+        if(changeDue-unitCrr <0) {
+            break;
+          }                
+      }
+      obj.change.push([crrName, checkOutSum]);
+      obj.status = 'OPEN';
+    } 
+
+    //if total cash is more than or equal to change
+    else if(changeDue >= cash) {
+      obj.change.push([crrName, cash]);
+      changeDue-=cash;
+      cashSum-=cash;
+      cash-=changeDue;
+    }
+
+    //if total cash is 0 although unit currency is bigger than change
+    else if(changeDue < unitCrr && cash===0) {
+      obj.change.push([crrName, cash]);
+    }
+  }
+
+//after check-out, check if there's change due
+  if(changeDue > 0) {
+    obj.status = "INSUFFICIENT_FUNDS";
+    obj.change = [];
+  }
+
+//after check-out no cash is left on desk and due is zero
+  if(changeDue===0 && cashSum ===0) {
+    obj.status = 'CLOSED';
+    obj.change.reverse();
+}
+ 
+
+/*
+1 PENNY = 0.01 DOLLARS
+1 NICKEL = 0.05 DOLLARS
+1 DIME = 0.1 DOLLARS
+1 QUARTER = 0.25 DOLLARS
+*/
+  function convertToNum(crrName) {
+    let num = 0;
+
+    switch(crrName) {
+
+    case 'PENNY': 
+    num = 0.01;
+    break;
+
+    case 'NICKEL':
+    num = 0.05;
+    break;
+
+    case 'DIME':
+    num = 0.1;
+    break;
+
+    case 'QUARTER':
+    num = 0.25;
+    break;
+
+    case 'ONE':
+    num = 1;
+    break;
+
+    case 'FIVE':
+    num = 5;
+    break;
+
+    case 'TEN':
+    num = 10;
+    break;
+
+    case 'TWENTY':
+    num = 20;
+    break;
+
+    case 'ONE HUNDRED':
+    num = 100;
+    break;
+
+    }  
+    return num;  
+  }
+
+return obj;
+
+}
+
+
+
